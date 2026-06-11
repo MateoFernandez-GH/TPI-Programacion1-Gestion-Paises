@@ -1,4 +1,5 @@
 import csv
+import os
 
 
 # ==========================================
@@ -9,8 +10,11 @@ def cargar_paises():
     paises = []
 
     try:
+        # Obtener la ruta absoluta del archivo CSV
+        ruta_script = os.path.dirname(os.path.abspath(__file__))
+        ruta_csv = os.path.join(ruta_script, "..", "data", "paises.csv")
 
-        with open("paises.csv", "r", encoding="utf-8") as archivo:
+        with open(ruta_csv, "r", encoding="utf-8") as archivo:
 
             lector = csv.DictReader(
                 archivo,
@@ -29,7 +33,11 @@ def cargar_paises():
                 paises.append(pais)
 
     except FileNotFoundError:
-        print("No se encontró el archivo CSV.")
+        print("Error: No se encontró el archivo CSV.")
+    except ValueError as e:
+        print(f"Error: Problema al convertir datos numéricos: {e}")
+    except Exception as e:
+        print(f"Error al cargar el archivo: {e}")
 
     return paises
 
@@ -39,7 +47,11 @@ def cargar_paises():
 # ==========================================
 def guardar_paises(paises):
 
-    with open("paises.csv", "w", newline="", encoding="utf-8") as archivo:
+    # Obtener la ruta absoluta del archivo CSV
+    ruta_script = os.path.dirname(os.path.abspath(__file__))
+    ruta_csv = os.path.join(ruta_script, "..", "data", "paises.csv")
+
+    with open(ruta_csv, "w", newline="", encoding="utf-8") as archivo:
 
         campos = [
             "nombre",
@@ -66,6 +78,10 @@ def guardar_paises(paises):
 def mostrar_paises(paises):
 
     print("\n===== LISTA DE PAISES =====\n")
+
+    if not paises:
+        print("No hay países registrados.\n")
+        return
 
     for pais in paises:
 
@@ -150,16 +166,24 @@ def buscar_pais(paises):
 
     encontrado = False
 
+    print("\n===== RESULTADOS DE BÚSQUEDA =====\n")
+
     for pais in paises:
 
         if texto in pais["nombre"].lower():
 
-            print(pais)
+            print(
+                f'Nombre: {pais["nombre"]} | '
+                f'Población: {pais["poblacion"]} | '
+                f'Superficie: {pais["superficie"]} km² | '
+                f'Continente: {pais["continente"]}'
+            )
 
             encontrado = True
 
     if not encontrado:
         print("No se encontraron resultados.")
+    print()
 
 
 # ==========================================
@@ -173,16 +197,24 @@ def filtrar_continente(paises):
 
     encontrado = False
 
+    print("\n===== RESULTADOS POR CONTINENTE =====\n")
+
     for pais in paises:
 
         if pais["continente"].lower() == continente:
 
-            print(pais)
+            print(
+                f'Nombre: {pais["nombre"]} | '
+                f'Población: {pais["poblacion"]} | '
+                f'Superficie: {pais["superficie"]} km² | '
+                f'Continente: {pais["continente"]}'
+            )
 
             encontrado = True
 
     if not encontrado:
         print("No hay resultados.")
+    print()
 
 
 # ==========================================
@@ -198,11 +230,25 @@ def filtrar_poblacion(paises):
         input("Población máxima: ")
     )
 
+    encontrado = False
+
+    print("\n===== RESULTADOS POR POBLACIÓN =====\n")
+
     for pais in paises:
 
         if minimo <= pais["poblacion"] <= maximo:
 
-            print(pais)
+            print(
+                f'Nombre: {pais["nombre"]} | '
+                f'Población: {pais["poblacion"]} | '
+                f'Superficie: {pais["superficie"]} km² | '
+                f'Continente: {pais["continente"]}'
+            )
+            encontrado = True
+
+    if not encontrado:
+        print("No hay resultados.")
+    print()
 
 
 # ==========================================
@@ -218,11 +264,25 @@ def filtrar_superficie(paises):
         input("Superficie máxima: ")
     )
 
+    encontrado = False
+
+    print("\n===== RESULTADOS POR SUPERFICIE =====\n")
+
     for pais in paises:
 
         if minimo <= pais["superficie"] <= maximo:
 
-            print(pais)
+            print(
+                f'Nombre: {pais["nombre"]} | '
+                f'Población: {pais["poblacion"]} | '
+                f'Superficie: {pais["superficie"]} km² | '
+                f'Continente: {pais["continente"]}'
+            )
+            encontrado = True
+
+    if not encontrado:
+        print("No hay resultados.")
+    print()
 
 
 # ==========================================
@@ -354,12 +414,11 @@ def mostrar_estadisticas(paises):
 
     print(
         "Promedio población:",
-        round(promedio_poblacion, 2)
+        round(promedio_poblacion)
     )
 
     print(
-        "Promedio superficie:",
-        round(promedio_superficie, 2)
+        f"Promedio superficie: {round(promedio_superficie, 2)} km²"
     )
 
     print("\nPaíses por continente:")
@@ -391,55 +450,57 @@ def menu():
         print("5. Filtrar por continente")
         print("6. Filtrar por población")
         print("7. Filtrar por superficie")
-        print("8. Ordenar por nombre")
-        print("9. Ordenar por población")
+        print("8. Ordenar por nombre (A-Z)")
+        print("9. Ordenar por población (de menor a mayor)")
         print("10. Ordenar por superficie")
         print("11. Mostrar estadísticas")
         print("0. Salir")
 
         opcion = input(
-            "Seleccione una opción: "
-        )
+            "\nSeleccione una opción: "
+        ).strip()
 
-        if opcion == "1":
-            mostrar_paises(paises)
+        match opcion:
+            case "1":
+                mostrar_paises(paises)
 
-        elif opcion == "2":
-            agregar_pais(paises)
+            case "2":
+                agregar_pais(paises)
 
-        elif opcion == "3":
-            actualizar_pais(paises)
+            case "3":
+                actualizar_pais(paises)
 
-        elif opcion == "4":
-            buscar_pais(paises)
+            case "4":
+                buscar_pais(paises)
 
-        elif opcion == "5":
-            filtrar_continente(paises)
+            case "5":
+                filtrar_continente(paises)
 
-        elif opcion == "6":
-            filtrar_poblacion(paises)
+            case "6":
+                filtrar_poblacion(paises)
 
-        elif opcion == "7":
-            filtrar_superficie(paises)
+            case "7":
+                filtrar_superficie(paises)
 
-        elif opcion == "8":
-            ordenar_nombre(paises)
+            case "8":
+                ordenar_nombre(paises)
 
-        elif opcion == "9":
-            ordenar_poblacion(paises)
+            case "9":
+                ordenar_poblacion(paises)
 
-        elif opcion == "10":
-            ordenar_superficie(paises)
+            case "10":
+                ordenar_superficie(paises)
 
-        elif opcion == "11":
-            mostrar_estadisticas(paises)
+            case "11":
+                mostrar_estadisticas(paises)
 
-        elif opcion == "0":
-            print("Programa finalizado.")
-            break
+            case "0":
+                print("Programa finalizado.\n")
+                break
 
-        else:
-            print("Opción inválida.")
+            case _:
+                print("Opción inválida. Intente nuevamente")
+
 
 
 menu()
