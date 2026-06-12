@@ -18,7 +18,7 @@ def cargar_paises():
     paises = []  # Creamos una lista vacía para almacenar los países cargados desde el archivo CSV
 
     try:
-        # Guardamos la ruta absoluta del archivo CSV utilizando el módulo os para asegurarnos de que funcione correctamente
+        # Extraemos la ruta absoluta del archvio ejecutado ( el presente ) desde el directorio que lo contiene.
         ruta_script = os.path.dirname(os.path.abspath(__file__))
         # Construimos la ruta completa al archivo CSV utilizando os.path.join para garantizar la compatibilidad entre sistemas operativos
         ruta_csv = os.path.join(ruta_script, "..", "data", "paises.csv") 
