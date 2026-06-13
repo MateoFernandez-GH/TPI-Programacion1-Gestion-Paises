@@ -181,8 +181,8 @@ Tanto el desarrollo del código fuente como la elaboración de la documentación
 
 Documento PDF:
 
-[PEGAR LINK AL PDF EN EL REPOSITORIO]
-
+docs/Documentacion_Tecnica_Academica .docx
+docs/Documentacion_Tecnica_Academica .pdf
 ---
 
 # Video Demostrativo
